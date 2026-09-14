@@ -130,6 +130,7 @@ services:
       init-kafka:
         condition: service_completed_successfully
     deploy:
+      replicas: 1
       resources:
         limits:
           memory: 256M
@@ -163,6 +164,7 @@ services:
       init-kafka:
         condition: service_completed_successfully
     deploy:
+      replicas: 1
       resources:
         limits:
           memory: 256M
