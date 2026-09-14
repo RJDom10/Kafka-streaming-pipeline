@@ -57,3 +57,4 @@ docker compose ps
 * **Kafka Broker (KRaft):** `localhost:9092`
 * **PostgreSQL:** `localhost:5432` (`db: wikidb`, `user: wikiuser`)
 * **Kafka UI (Interfaz Web):** [http://localhost:8080](http://localhost:8080)
+
