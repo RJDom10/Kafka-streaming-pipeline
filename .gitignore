@@ -1,0 +1,19 @@
+# Python & Entornos
+__pycache__/
+*.py[cod]
+*$py.class
+.env
+*.log
+
+# Carpeta Exclusiva de Soluciones (Privada / No para GitHub)
+soluciones/
+
+# Editores y Sistema Operativo
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+
+# Datos y temporales
+*.tmp
+postgres_data/

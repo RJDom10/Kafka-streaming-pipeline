@@ -1,0 +1,179 @@
+# ==============================================================================
+# Laboratorio 1: Ingesta y Desacoplamiento (Kafka KRaft + PostgreSQL + Kafka UI)
+# Diseñado para entornos con restricciones de memoria (consumo total <= 2.4 GB RAM)
+# ==============================================================================
+
+services:
+  # ----------------------------------------------------------------------------
+  # 1. Apache Kafka en modo KRaft (sin ZooKeeper)
+  # ----------------------------------------------------------------------------
+  kafka:
+    image: confluentinc/cp-kafka:7.6.1
+    container_name: lab1-kafka
+    hostname: kafka
+    ports:
+      - "9092:9092"
+    environment:
+      KAFKA_NODE_ID: 1
+      KAFKA_PROCESS_ROLES: 'broker,controller'
+      KAFKA_CONTROLLER_QUORUM_VOTERS: '1@kafka:29093'
+      KAFKA_LISTENERS: 'PLAINTEXT://0.0.0.0:29092,PLAINTEXT_HOST://0.0.0.0:9092,CONTROLLER://0.0.0.0:29093'
+      KAFKA_ADVERTISED_LISTENERS: 'PLAINTEXT://kafka:29092,PLAINTEXT_HOST://localhost:9092'
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: 'PLAINTEXT:PLAINTEXT,PLAINTEXT_HOST:PLAINTEXT,CONTROLLER:PLAINTEXT'
+      KAFKA_INTER_BROKER_LISTENER_NAME: 'PLAINTEXT'
+      KAFKA_CONTROLLER_LISTENER_NAMES: 'CONTROLLER'
+      CLUSTER_ID: '4L622nShTUiBenA1g20Tsw'
+      KAFKA_LOG_DIRS: '/tmp/kraft-combined-logs'
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+      KAFKA_GROUP_INITIAL_REBALANCE_DELAY_MS: 0
+      KAFKA_TRANSACTION_STATE_LOG_MIN_ISR: 1
+      KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: 1
+      KAFKA_JVM_PERFORMANCE_OPTS: "-Xmx512m -Xms512m"
+    healthcheck:
+      test: ["CMD", "kafka-broker-api-versions", "--bootstrap-server", "kafka:29092"]
+      interval: 10s
+      timeout: 10s
+      retries: 5
+    deploy:
+      resources:
+        limits:
+          memory: 1024M
+    networks:
+      - lab1-network
+
+  # ----------------------------------------------------------------------------
+  # 2. Inicializador de Tópicos (Se apaga automáticamente al terminar)
+  # ----------------------------------------------------------------------------
+  init-kafka:
+    image: confluentinc/cp-kafka:7.6.1
+    container_name: lab1-init-kafka
+    depends_on:
+      kafka:
+        condition: service_healthy
+    entrypoint: ["/bin/sh", "-c"]
+    command: |
+      "
+      # Crear el tópico con 3 particiones antes de que arranquen los scripts Python
+      kafka-topics --bootstrap-server kafka:29092 --create --if-not-exists --topic wiki.changes --partitions 3 --replication-factor 1
+      echo '✔ Tópico wiki.changes verificado/creado exitosamente.'
+      "
+    networks:
+      - lab1-network
+
+  # ----------------------------------------------------------------------------
+  # 3. PostgreSQL 16 (Base de datos relacional)
+  # ----------------------------------------------------------------------------
+  postgres:
+    image: postgres:16-alpine
+    container_name: lab1-postgres
+    hostname: postgres
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_DB: wikidb
+      POSTGRES_USER: wikiuser
+      POSTGRES_PASSWORD: wikipassword
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql:ro
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U wikiuser -d wikidb"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    deploy:
+      resources:
+        limits:
+          memory: 512M
+    networks:
+      - lab1-network
+
+  # ----------------------------------------------------------------------------
+  # 4. Kafka UI (Consola visual)
+  # ----------------------------------------------------------------------------
+  kafka-ui:
+    image: provectuslabs/kafka-ui:latest
+    container_name: lab1-kafka-ui
+    hostname: kafka-ui
+    ports:
+      - "8080:8080"
+    environment:
+      KAFKA_CLUSTERS_0_NAME: local-kraft
+      KAFKA_CLUSTERS_0_BOOTSTRAPSERVERS: kafka:29092
+      DYNAMIC_CONFIG_ENABLED: 'true'
+    depends_on:
+      kafka:
+        condition: service_healthy
+    deploy:
+      resources:
+        limits:
+          memory: 384M
+    networks:
+      - lab1-network
+
+  # ----------------------------------------------------------------------------
+  # 5. Ingestor Wikimedia (Producer Python)
+  # ----------------------------------------------------------------------------
+  producer:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: lab1-producer
+    command: python -u producer.py
+    restart: on-failure
+    environment:
+      KAFKA_BROKER: "kafka:29092"
+      TOPIC_NAME: "wiki.changes"
+    depends_on:
+      kafka:
+        condition: service_healthy
+      init-kafka:
+        condition: service_completed_successfully
+    deploy:
+      resources:
+        limits:
+          memory: 256M
+    networks:
+      - lab1-network
+
+  # ----------------------------------------------------------------------------
+  # 6. Persistidor Relacional (Consumer Python)
+  # ----------------------------------------------------------------------------
+  consumer:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    # container_name: lab1-consumer
+    command: python -u consumer.py
+    restart: on-failure
+    environment:
+      KAFKA_BROKER: "kafka:29092"
+      TOPIC_NAME: "wiki.changes"
+      GROUP_ID: "wiki-persister-group"
+      PG_HOST: "postgres"
+      PG_PORT: 5432
+      PG_DB: "wikidb"
+      PG_USER: "wikiuser"
+      PG_PASSWORD: "wikipassword"
+    depends_on:
+      kafka:
+        condition: service_healthy
+      postgres:
+        condition: service_healthy
+      init-kafka:
+        condition: service_completed_successfully
+    deploy:
+      resources:
+        limits:
+          memory: 256M
+    networks:
+      - lab1-network
+
+volumes:
+  postgres_data:
+    driver: local
+
+networks:
+  lab1-network:
+    name: lab1-network
+    driver: bridge
