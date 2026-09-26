@@ -5,17 +5,17 @@
 
 ---
 
-## 🎯 Instrucciones Generales
+## Instrucciones Generales
 Este laboratorio está diseñado para que pongas a prueba tus conocimientos de forma práctica. Cada reto plantea un **objetivo técnico del mundo real**, un **criterio de aceptación (cómo saber si tu implementación es correcta)** y pistas clave para guiarte sin revelar la solución directa.
 
 ---
 
-## 🧪 Reto 1: Medición de Rendimiento — Comparativa de Throughput (1 vs 3 Consumidores)
+## Reto 1: Medición de Rendimiento — Comparativa de Throughput (1 vs 3 Consumidores)
 
-### 📌 Planteamiento del problema:
+### Planteamiento del problema:
 Como ingeniero de datos, debes evaluar cuantitativamente el impacto de triplicar las réplicas del consumidor en la tasa efectiva de inserción en PostgreSQL (`wiki_recent_changes`).
 
-### 🎯 Tu Misión:
+### Tu Misión:
 1. Con **1 solo consumidor activo**, mide cuántos registros ingresan a la tabla `wiki_recent_changes` en un intervalo estricto de **10 o 20 segundos**.
 2. Escala a **3 consumidores en paralelo** (`docker compose up -d --scale consumer=3`).
 3. Mide nuevamente la cantidad de registros insertados en el mismo intervalo de tiempo.
@@ -24,18 +24,18 @@ Como ingeniero de datos, debes evaluar cuantitativamente el impacto de triplicar
    * *¿El sistema está limitado por la capacidad de consumo (Consumer-Bounded) o por la tasa de generación de Wikimedia (Source-Bounded)?*
    * *¿Qué impacto observas en el Consumer Lag de las 3 particiones al pasar a 3 consumidores?*
 
-### ✅ Criterio de Aceptación:
+### Criterio de Aceptación:
 * Obtener dos métricas cuantitativas reproducibles: `EPS_1_consumidor` y `EPS_3_consumidores`.
 * Redactar una breve conclusión técnica justificando los resultados en función de la tasa de ingesta de Wikimedia.
 
 ---
 
-## 🧪 Reto 2: Crear un Segundo Grupo de Consumo Independiente (Patrón Pub/Sub Puro)
+## Reto 2: Crear un Segundo Grupo de Consumo Independiente (Patrón Pub/Sub Puro)
 
-### 📌 Planteamiento del problema:
+### Planteamiento del problema:
 El equipo de Data Science requiere consumir los eventos en tiempo real de `wiki.changes` para entrenar un modelo de detección de anomalías. **Exigen acceso a los mismos eventos en vivo, pero no deben conectarse a PostgreSQL ni interferir con el consumidor existente (`wiki-persister-group`).**
 
-### 🎯 Tu Misión:
+### Tu Misión:
 1. Ejecutar un consumidor efímero usando la herramienta oficial `kafka-console-consumer` dentro del contenedor `lab1-kafka`.
 2. Asignarle un nuevo `group.id` exclusivo (por ejemplo: `grupo-ciencia-datos`).
 3. Configurar el consumidor para que lea al menos 5 o 10 mensajes mostrando la clave del evento (el nombre del wiki).
@@ -44,17 +44,17 @@ El equipo de Data Science requiere consumir los eventos en tiempo real de `wiki.
    * Los offsets de cada grupo avanzan de forma independiente sin afectarse mutuamente.
    * El persistidor de PostgreSQL continúa insertando datos sin ninguna alteración.
 
-### ✅ Criterio de Aceptación:
+### Criterio de Aceptación:
 * Ambos grupos (`wiki-persister-group` y `grupo-ciencia-datos`) deben figurar en la pestaña **Consumers** de Kafka UI con sus respectivos miembros y métricas de lag aisladas.
 
 ---
 
-## 🧪 Reto 3: Desastre y Reconstrucción — Reseteo de Offsets a `earliest`
+## Reto 3: Desastre y Reconstrucción — Reseteo de Offsets a `earliest`
 
-### 📌 Planteamiento del problema:
+### Planteamiento del problema:
 Para fines de auditoría forense y recuperación de desastres, se requiere reprocesar todos los eventos almacenados en Kafka desde el primer mensaje disponible en la ventana de retención.
 
-### 🎯 Tu Misión:
+### Tu Misión:
 1. Detener el servicio de consumidores (`docker compose stop consumer`).
 2. Verificar el estado del grupo con el comando `kafka-consumer-groups --state`. *(Pista: Kafka exige que el grupo alcance el estado `Empty` antes de permitir modificar los punteros).*
 3. Ejecutar primero una simulación con `--dry-run` para verificar los nuevos offsets.
@@ -66,13 +66,13 @@ Para fines de auditoría forense y recuperación de desastres, se requiere repro
 > * ¿Por qué la base de datos no arroja errores de clave primaria duplicada (`duplicate key value violates unique constraint`)?
 > * ¿Qué papel juega la **idempotencia** (`ON CONFLICT (id) DO NOTHING` o `DO UPDATE`) en sistemas de streaming resilientes?
 
-### ✅ Criterio de Aceptación:
+### Criterio de Aceptación:
 * Ejecutar exitosamente el reseteo comprobando que el `NEW-OFFSET` en las 3 particiones queda en `0`.
 * Verificar mediante `docker compose logs consumer` que los registros se re-ingestan sin que el contenedor falle ni se interrumpa la ejecución.
 
 ---
 
-## 🧪 Reto 4: Autoevaluación Teórico-Práctica
+## Reto 4: Autoevaluación Teórico-Práctica
 
 Responde a las siguientes 4 preguntas conceptuales para validar tu entendimiento:
 

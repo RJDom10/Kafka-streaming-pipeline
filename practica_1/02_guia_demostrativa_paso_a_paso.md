@@ -5,12 +5,12 @@
 
 ---
 
-## 🎯 Objetivo de la Demostración
+## Objetivo de la Demostración
 Guiarte paso a paso por la ejecución práctica del ciclo de vida completo de un grupo de consumidores: desde el estado base con 1 consumidor, escalando a 2, 3 y 4 consumidores, hasta provocar una falla deliberada y observar la auto-recuperación del clúster.
 
 ---
 
-## 📋 Verificación Inicial del Entorno
+## Verificación Inicial del Entorno
 
 Antes de comenzar, abre tu terminal y verifica que el clúster esté operativo:
 
@@ -26,11 +26,11 @@ docker compose ps
 * `consumer` ➔ `Up` (1 réplica inicial)
 
 Abre en tu navegador la consola visual:
-👉 **[http://localhost:8080](http://localhost:8080)**
+**[http://localhost:8080](http://localhost:8080)**
 
 ---
 
-## 🔹 Fase 1: Medición de la Línea Base (1 Consumidor)
+## Fase 1: Medición de la Línea Base (1 Consumidor)
 
 ### Paso 1.1: Inspeccionar el grupo desde la consola CLI
 Ejecuta el siguiente comando para consultar el estado del grupo directamente en el broker de Kafka:
@@ -41,7 +41,7 @@ docker exec -it lab1-kafka kafka-consumer-groups \
   --describe --group wiki-persister-group
 ```
 
-### 🔍 Qué observar en la salida:
+### Qué observar en la salida:
 Verás 3 líneas de salida, una por cada partición del tópico:
 ```text
 GROUP               TOPIC           PARTITION  CURRENT-OFFSET  LOG-END-OFFSET  LAG             CONSUMER-ID     HOST            CLIENT-ID
@@ -63,7 +63,7 @@ wiki-persister-group wiki.changes    2          15301           15305           
 
 ---
 
-## 🔹 Fase 2: Escalar a 2 Consumidores (Scale-Up Parcial)
+## Fase 2: Escalar a 2 Consumidores (Scale-Up Parcial)
 
 Vamos a duplicar la potencia de procesamiento levantando una segunda réplica del servicio consumidor.
 
@@ -75,8 +75,8 @@ docker compose up -d --scale consumer=2
 **Salida esperada:**
 ```text
 [+] Running 2/2
- ✔ Container lab_kafka_test-consumer-1  Running
- ✔ Container lab_kafka_test-consumer-2  Started
+ Container lab_kafka_test-consumer-1  Running
+ Container lab_kafka_test-consumer-2  Started
 ```
 
 ### Paso 2.2: Ver los logs del Rebalanceo en tiempo real
@@ -88,7 +88,7 @@ docker compose logs consumer --tail=30 -f
 
 *(Presiona `Ctrl + C` para salir de los logs una vez que veas el resultado).*
 
-### 🔍 Qué observar en los logs:
+### Qué observar en los logs:
 Verás cómo el contenedor original (`consumer-1`) recibe una revocación de particiones y el nuevo (`consumer-2`) recibe su parte:
 ```text
 consumer-1 | [DEBUG] Revocando particiones asignadas...
@@ -110,7 +110,7 @@ Ahora verás **dos identificadores distintos** en `CONSUMER-ID`:
 
 ---
 
-## 🔹 Fase 3: Escalar a 3 Consumidores (Paralelismo Óptimo 1:1)
+## Fase 3: Escalar a 3 Consumidores (Paralelismo Óptimo 1:1)
 
 Dado que nuestro tópico tiene 3 particiones, el punto de saturación y paralelismo perfecto es exactamente 3 consumidores.
 
@@ -130,7 +130,7 @@ Refresca la página en **Kafka UI** (`http://localhost:8080/ui/clusters/local/co
 
 ---
 
-## 🔹 Fase 4: Sobreescalado (¿Qué pasa con 4 consumidores?)
+## Fase 4: Sobreescalado (¿Qué pasa con 4 consumidores?)
 
 ¿Qué ocurre si un ingeniero novato piensa: *"Tengo mucho lag, voy a poner 10 consumidores"*?
 
@@ -153,7 +153,7 @@ docker exec -it lab1-kafka kafka-consumer-groups \
   --describe --group wiki-persister-group --members
 ```
 
-### 🔍 Qué observar:
+### Qué observar:
 1. Habrá **4 miembros** registrados en el grupo.
 2. Tres miembros tendrán asignada 1 partición cada uno (`P0`, `P1`, `P2`).
 3. El cuarto miembro aparecerá con `Partitions: None` (o lista vacía).
@@ -161,7 +161,7 @@ docker exec -it lab1-kafka kafka-consumer-groups \
 
 ---
 
-## 🔹 Fase 5: Chaos Engineering (Simular Muerte de un Nodo)
+## Fase 5: Chaos Engineering (Simular Muerte de un Nodo)
 
 Vamos a simular una falla catastrófica de infraestructura matando abruptamente uno de los contenedores que está trabajando activamente.
 
@@ -187,7 +187,7 @@ La partición que atendía el nodo caído fue rescatada inmediatamente por uno d
 
 ---
 
-## 🔹 Fase 6: Restaurar el Entorno al Estado Original
+## Fase 6: Restaurar el Entorno al Estado Original
 
 Una vez completada la demostración, regresamos el clúster a su configuración estándar de 1 consumidor:
 

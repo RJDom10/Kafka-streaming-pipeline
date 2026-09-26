@@ -360,13 +360,13 @@ Este nuevo consumer lee el mismo tópico **de forma completamente independiente*
 
 | Aspecto | Sin Kafka (directo) | Con Kafka (este proyecto) |
 |---|---|---|
-| Pérdida de datos si la BD cae | ❌ Sí, irreversible | ✅ No, Kafka acumula |
-| Múltiples destinos (PG + DW + ML) | ❌ Requiere cambiar código | ✅ Nuevos consumer groups |
-| Replay de eventos históricos | ❌ Imposible | ✅ Cambiar offset |
-| Escalar el procesamiento | ❌ Requiere refactoring | ✅ Más consumers + particiones |
-| Picos de tráfico | ❌ Sobrecarga la BD | ✅ Kafka absorbe el pico |
-| Observabilidad | ❌ Solo logs de la app | ✅ Kafka UI + métricas |
-| Independencia de componentes | ❌ Todo acoplado | ✅ Cada parte es independiente |
+| Pérdida de datos si la BD cae | Sí, irreversible | No, Kafka acumula |
+| Múltiples destinos (PG + DW + ML) | Requiere cambiar código | Nuevos consumer groups |
+| Replay de eventos históricos | Imposible | Cambiar offset |
+| Escalar el procesamiento | Requiere refactoring | Más consumers + particiones |
+| Picos de tráfico | Sobrecarga la BD | Kafka absorbe el pico |
+| Observabilidad | Solo logs de la app | Kafka UI + métricas |
+| Independencia de componentes | Todo acoplado | Cada parte es independiente |
 
 ---
 

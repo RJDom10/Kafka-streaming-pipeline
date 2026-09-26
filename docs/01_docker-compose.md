@@ -1,4 +1,4 @@
-# 📄 Documentación: `docker-compose.yml`
+# Documentación: `docker-compose.yml`
 
 **Archivo:** `docker-compose.yml`
 **Propósito:** Orquestador de la infraestructura completa del laboratorio. Define, configura y conecta todos los servicios (contenedores) que necesita el sistema para funcionar como una unidad cohesionada.
@@ -21,7 +21,7 @@ networks:       # Red interna compartida entre contenedores
 
 ---
 
-## 🔧 Servicio 1: `kafka` — El Broker de Mensajes
+## Servicio 1: `kafka` — El Broker de Mensajes
 
 ### `image: confluentinc/cp-kafka:7.6.1`
 Imagen Docker de Confluent Platform Kafka v7.6.1. Es la distribución empresarial de Kafka que incluye soporte nativo para el modo **KRaft** (sin ZooKeeper). Confluent es la empresa fundada por los creadores originales de Apache Kafka.
@@ -66,17 +66,17 @@ KAFKA_ADVERTISED_LISTENERS: Define QUÉ LE DICE A LOS CLIENTES que usen
 | CONTROLLER | 29093 | Protocolo interno KRaft |
 
 ### `CLUSTER_ID: '4L622nShTUiBenA1g20Tsw'`
-**🔑 UUID de 22 caracteres en Base64.** Identifica de forma única este clúster Kafka. Necesario en KRaft para que el estado persista entre reinicios. Se genera una sola vez con: `kafka-storage random-uuid`
+**UUID de 22 caracteres en Base64.** Identifica de forma única este clúster Kafka. Necesario en KRaft para que el estado persista entre reinicios. Se genera una sola vez con: `kafka-storage random-uuid`
 
 ### `KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1`
-**🔑 VARIABLE CLAVE** — Factor de replicación del tópico interno `__consumer_offsets`. Este tópico guarda hasta dónde llegó cada consumer group. Con `1` solo hay una copia. En producción con 3 brokers se usa `3`.
+**VARIABLE CLAVE** — Factor de replicación del tópico interno `__consumer_offsets`. Este tópico guarda hasta dónde llegó cada consumer group. Con `1` solo hay una copia. En producción con 3 brokers se usa `3`.
 
 ### `KAFKA_JVM_PERFORMANCE_OPTS: "-Xmx512m -Xms512m"`
 Limita la JVM de Java (que ejecuta Kafka) a 512 MB de heap máximo y mínimo. Sin esto Kafka puede consumir 4-8 GB de RAM.
 
 ---
 
-## 🛠️ Servicio 2: `init-kafka` — Inicializador de Tópicos
+## Servicio 2: `init-kafka` — Inicializador de Tópicos
 
 ```yaml
 depends_on:
@@ -90,8 +90,8 @@ kafka-topics --bootstrap-server kafka:29092
   --create
   --if-not-exists
   --topic wiki.changes
-  --partitions 3            # 🔑 NÚMERO DE PARTICIONES
-  --replication-factor 1    # 🔑 FACTOR DE REPLICACIÓN
+  --partitions 3            # NÚMERO DE PARTICIONES
+  --replication-factor 1    # FACTOR DE REPLICACIÓN
 ```
 
 ### ¿Dónde cambiar particiones y replicación?
@@ -102,13 +102,13 @@ kafka-topics --bootstrap-server kafka:29092
 | `--partitions` | `3` | Edita el número en el comando | Más particiones = más paralelismo de consumo |
 | `--replication-factor` | `1` | Edita el número en el comando | Más réplicas = mayor tolerancia a fallos |
 
-> ⚠️ El `--replication-factor` no puede ser mayor al número de brokers disponibles. Con 1 broker, máximo `1`.
+> El `--replication-factor` no puede ser mayor al número de brokers disponibles. Con 1 broker, máximo `1`.
 
 Este contenedor se **apaga automáticamente** al terminar el comando. Los servicios que dependen de él usan `condition: service_completed_successfully`.
 
 ---
 
-## 🗄️ Servicio 3: `postgres` — Base de Datos Relacional
+## Servicio 3: `postgres` — Base de Datos Relacional
 
 ### `image: postgres:16-alpine`
 PostgreSQL 16 en Alpine Linux. La variante `-alpine` ocupa ~80 MB en vez de ~400 MB de la imagen estándar.
@@ -129,13 +129,13 @@ PostgreSQL ejecuta automáticamente todos los `.sql` en `/docker-entrypoint-init
 
 ---
 
-## 👁️ Servicio 4: `kafka-ui`
+## Servicio 4: `kafka-ui`
 
 Interfaz web visual para inspeccionar Kafka. Accesible en `http://localhost:8080`. Permite ver tópicos, particiones, mensajes, consumer groups y offsets sin necesidad de usar la línea de comandos.
 
 ---
 
-## 🐍 Servicios 5 y 6: `producer` y `consumer`
+## Servicios 5 y 6: `producer` y `consumer`
 
 ```yaml
 build:

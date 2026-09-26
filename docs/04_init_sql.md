@@ -1,4 +1,4 @@
-# 📄 Documentación: `init.sql`
+# Documentación: `init.sql`
 
 **Archivo:** `init.sql`
 **Propósito:** Script SQL de inicialización de la base de datos. Se ejecuta **automáticamente una sola vez** cuando el contenedor de PostgreSQL se levanta por primera vez. Define el esquema (estructura) de la base de datos: la tabla principal y sus índices de optimización.
@@ -13,7 +13,7 @@ En `docker-compose.yml`, el servicio `postgres` tiene este volumen montado:
 ```
 PostgreSQL tiene un mecanismo especial: al arrancar por primera vez (cuando el directorio de datos está vacío), ejecuta automáticamente **en orden alfabético** todos los archivos `.sql` y `.sh` que encuentre dentro de `/docker-entrypoint-initdb.d/`. El sufijo `:ro` (read-only) evita que el contenedor modifique el archivo original.
 
-> ⚠️ Si el volumen `postgres_data` ya existe de un arranque anterior, PostgreSQL NO ejecutará estos scripts de nuevo. Para reinicializar desde cero: `docker compose down -v` (elimina el volumen).
+> Si el volumen `postgres_data` ya existe de un arranque anterior, PostgreSQL NO ejecutará estos scripts de nuevo. Para reinicializar desde cero: `docker compose down -v` (elimina el volumen).
 
 ---
 

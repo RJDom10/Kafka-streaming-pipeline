@@ -5,7 +5,7 @@
 
 ---
 
-## 🔑 Parámetros Universales de Conexión
+## Parámetros Universales de Conexión
 
 Independientemente del método que elijas, los parámetros de conexión definidos en `docker-compose.yml` son:
 
@@ -20,7 +20,7 @@ Independientemente del método que elijas, los parámetros de conexión definido
 
 ---
 
-# 🚀 OPCIÓN 1: Consola Interactiva `psql` (Recomendada al 100%)
+# OPCIÓN 1: Consola Interactiva `psql` (Recomendada al 100%)
 
 Esta es la opción estándar preferida por ingenieros de datos y administradores de sistemas. No requiere instalar nada en tu computadora local porque utiliza el binario de PostgreSQL que ya corre dentro del contenedor Docker.
 
@@ -53,7 +53,7 @@ wikidb=#
 
 ---
 
-### 1.3 🌟 El Arma Secreta de la Terminal: El Comando `\watch` (Dashboard en Tiempo Real)
+### 1.3 El Arma Secreta de la Terminal: El Comando `\watch` (Dashboard en Tiempo Real)
 
 ¿Sabías que `psql` puede convertir cualquier consulta SQL en un panel en vivo que se refresca solo?
 
@@ -70,7 +70,7 @@ wikidb=#
 
 ---
 
-# 🖥️ OPCIÓN 2: Extensión Integrada en VS Code / Antigravity IDE
+# OPCIÓN 2: Extensión Integrada en VS Code / Antigravity IDE
 
 Si prefieres no salir del editor y tener autocompletado visual:
 
@@ -96,7 +96,7 @@ Si prefieres no salir del editor y tener autocompletado visual:
 
 ---
 
-# 🎨 OPCIÓN 3: Clientes Gráficos Dedicados (DBeaver / DataGrip / TablePlus / pgAdmin)
+# OPCIÓN 3: Clientes Gráficos Dedicados (DBeaver / DataGrip / TablePlus / pgAdmin)
 
 Son aplicaciones de escritorio completas especializadas en análisis de datos, visualización de esquemas y exportación a CSV/Excel.
 
@@ -117,7 +117,7 @@ Son aplicaciones de escritorio completas especializadas en análisis de datos, v
 
 ---
 
-## ⚖️ Comparativa: ¿Cuál opción te conviene más?
+## Comparativa: ¿Cuál opción te conviene más?
 
 | Criterio | Opción 1: Terminal (`psql`) | Opción 2: Extensión IDE | Opción 3: DBeaver / GUI |
 |---|---|---|---|

@@ -1,4 +1,4 @@
-# 📄 Documentación: `consumer.py`
+# Documentación: `consumer.py`
 
 **Archivo:** `consumer.py`
 **Propósito:** Script Python que actúa como **Consumidor Kafka**. Lee los mensajes del tópico `wiki.changes`, los transforma mínimamente y los persiste en lotes en la tabla `wiki_recent_changes` de PostgreSQL de forma eficiente.
@@ -79,7 +79,7 @@ Parámetros de conexión a PostgreSQL leídos de variables de entorno. `PG_PORT`
 ```python
 BATCH_SIZE = 50
 ```
-**🔑 VARIABLE CLAVE.** Número de registros que se acumulan antes de ejecutar el `INSERT` masivo. Con `50`, el consumer acumula 50 mensajes y los inserta en una sola transacción SQL. Elegido como equilibrio entre:
+**VARIABLE CLAVE.** Número de registros que se acumulan antes de ejecutar el `INSERT` masivo. Con `50`, el consumer acumula 50 mensajes y los inserta en una sola transacción SQL. Elegido como equilibrio entre:
 - Muy pequeño (1-5): Muchas transacciones, mucho overhead
 - Muy grande (500+): Mayor latencia, mayor riesgo de pérdida en caso de fallo
 
@@ -148,9 +148,9 @@ Crea el consumidor y se suscribe al tópico. Con `subscribe` (vs `assign`), Kafk
 try:
     pg_conn = get_pg_connection()
     pg_cursor = pg_conn.cursor()
-    print("✅ Conectado exitosamente a PostgreSQL (wikidb).")
+    print("Conectado exitosamente a PostgreSQL (wikidb).")
 except Exception as e:
-    print(f"❌ Error al conectar a Postgres: {e}")
+    print(f"Error al conectar a Postgres: {e}")
     sys.exit(1)
 ```
 Intenta conectarse a PostgreSQL al inicio. Si falla (ej: postgres aún no está listo), termina el proceso con `sys.exit(1)`. Docker tiene `restart: on-failure`, así que Docker lo reiniciará automáticamente hasta que PostgreSQL esté disponible.
@@ -206,7 +206,7 @@ Si no llegó ningún mensaje en 1 segundo, vuelve al inicio del loop.
             KafkaError.UNKNOWN_TOPIC_OR_PART,
             KafkaError._UNKNOWN_TOPIC,
         ):
-            print(f"⏳ Esperando a que el tópico '{TOPIC_NAME}' esté disponible...")
+            print(f"Esperando a que el tópico '{TOPIC_NAME}' esté disponible...")
             time.sleep(2)
             continue
 ```
@@ -214,7 +214,7 @@ Si el tópico no existe aún (posible race condition al arrancar), espera 2 segu
 
 ```python
         else:
-            print(f"❌ Error crítico de Kafka: {msg.error()}")
+            print(f"Error crítico de Kafka: {msg.error()}")
             break
 ```
 Cualquier otro error (ej: pérdida de conexión con el broker) rompe el loop. Docker reiniciará el proceso.
@@ -247,7 +247,7 @@ Agrega el registro procesado a la lista del batch.
     if len(batch_records) >= BATCH_SIZE:
         execute_batch(pg_cursor, insert_query, batch_records)
         pg_conn.commit()
-        print(f"💾 {len(batch_records)} registros insertados en Postgres. (Offset: {msg.offset()})")
+        print(f"{len(batch_records)} registros insertados en Postgres. (Offset: {msg.offset()})")
         batch_records.clear()
 ```
 Cuando el batch alcanza 50 registros:
@@ -262,12 +262,12 @@ Cuando el batch alcanza 50 registros:
 
 ```python
 except KeyboardInterrupt:
-    print("\n⚡ Deteniendo consumidor...")
+    print("\nDeteniendo consumidor...")
 finally:
     if batch_records:
         execute_batch(pg_cursor, insert_query, batch_records)
         pg_conn.commit()
-        print(f"💾 {len(batch_records)} registros residuales guardados en Postgres.")
+        print(f"{len(batch_records)} registros residuales guardados en Postgres.")
 
     pg_cursor.close()
     pg_conn.close()
@@ -305,6 +305,6 @@ Kafka Broker (tópico wiki.changes)
 
 | Método | 50 registros | Round-trips a PG | Eficiencia |
 |---|---|---|---|
-| `cursor.execute()` en loop | 50 queries separadas | 50 | ❌ Lento |
-| `execute_batch()` | 1 llamada múltiple | 1-2 | ✅ Rápido |
-| `execute_values()` | 1 query con VALUES múltiples | 1 | ✅✅ Más rápido |
+| `cursor.execute()` en loop | 50 queries separadas | 50 | Lento |
+| `execute_batch()` | 1 llamada múltiple | 1-2 | Rápido |
+| `execute_values()` | 1 query con VALUES múltiples | 1 | Más rápido |

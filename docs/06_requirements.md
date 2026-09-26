@@ -1,4 +1,4 @@
-# 📄 Documentación: `requirements.txt`
+# Documentación: `requirements.txt`
 
 **Archivo:** `requirements.txt`
 **Propósito:** Lista exacta de las dependencias Python (librerías de terceros) que el proyecto necesita, con sus versiones exactas fijadas. Es el contrato de dependencias del proyecto.

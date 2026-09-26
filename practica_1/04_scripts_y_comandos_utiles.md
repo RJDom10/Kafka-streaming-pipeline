@@ -9,7 +9,7 @@ Este documento recopila comandos prácticos de una sola línea (*one-liners*) y 
 
 ---
 
-## 🛠️ 1. Comandos de Administración de Consumidores (Kafka CLI)
+## 1. Comandos de Administración de Consumidores (Kafka CLI)
 
 ### 1.1 Listar todos los grupos de consumidores activos
 ```bash
@@ -33,7 +33,7 @@ docker exec -it lab1-kafka kafka-consumer-groups \
 
 ---
 
-## 📊 2. Scripts de Medición Continua (Monitoreo en Vivo)
+## 2. Scripts de Medición Continua (Monitoreo en Vivo)
 
 ### 2.1 Monitorear el Lag cada 2 segundos en tiempo real (PowerShell)
 Ejecuta esto en una terminal para tener un panel de control en vivo del Lag de cada partición:
@@ -65,7 +65,7 @@ while ($true) {
 
 ---
 
-## 🔄 3. Comandos Rápidos de Escalado con Docker Compose
+## 3. Comandos Rápidos de Escalado con Docker Compose
 
 ### 3.1 Escalar a N consumidores
 ```bash
@@ -86,7 +86,7 @@ docker compose logs consumer | grep -E "assigned|revoked|Partitions|rebalance"
 
 ---
 
-## 🔍 4. Atajos Directos en Kafka UI
+## 4. Atajos Directos en Kafka UI
 
 Si prefieres la interfaz gráfica en tu navegador:
 * **Consola Principal:** `http://localhost:8080`

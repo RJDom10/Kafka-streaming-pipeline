@@ -5,7 +5,7 @@
 
 ---
 
-## 🎯 Objetivo
+## Objetivo
 Aprender a extraer valor y métricas de negocio en tiempo real a partir de los datos que fluyen continuamente desde Kafka hacia la tabla `wiki_recent_changes` en PostgreSQL.
 
 ---
@@ -18,7 +18,7 @@ SELECT
     id,
     wiki,
     user_name,
-    CASE WHEN bot THEN '🤖 Bot' ELSE '👤 Humano' END AS tipo,
+    CASE WHEN bot THEN 'Bot' ELSE 'Humano' END AS tipo,
     change_type,
     byte_diff,
     TO_CHAR(event_timestamp, 'HH24:MI:SS') AS hora_evento
@@ -45,7 +45,7 @@ ORDER BY total_ediciones DESC
 LIMIT 10;
 ```
 
-> **💡 Consejo en Terminal:**  
+> **Consejo en Terminal:**  
 > Ejecuta esta consulta con `\watch 3` en `psql` para ver cómo los porcentajes se recalculan en tiempo real mientras el productor sigue ingiriendo eventos.
 
 ---
@@ -57,7 +57,7 @@ LIMIT 10;
 
 ```sql
 SELECT 
-    CASE WHEN bot THEN '🤖 Bots Automatizados' ELSE '👤 Editores Humanos' END AS categoria,
+    CASE WHEN bot THEN 'Bots Automatizados' ELSE 'Editores Humanos' END AS categoria,
     COUNT(*) AS total_ediciones,
     ROUND(AVG(byte_diff), 2) AS promedio_bytes_por_edicion,
     MAX(byte_diff) AS edicion_mas_grande_agregada,
@@ -66,7 +66,7 @@ FROM wiki_recent_changes
 GROUP BY bot;
 ```
 
-### 🔍 Interpretación analítica:
+### Interpretación analítica:
 * Notarás que los **Bots** realizan una cantidad descomunal de ediciones pequeñas y estandarizadas (traducciones de enlaces, adición de categorías).
 * Los **Humanos** suelen tener una varianza mucho más amplia en `byte_diff` (redacción de párrafos enteros o borrado de secciones).
 

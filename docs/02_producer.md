@@ -1,4 +1,4 @@
-# 📄 Documentación: `producer.py`
+# Documentación: `producer.py`
 
 **Archivo:** `producer.py`
 **Propósito:** Script Python que actúa como **Productor Kafka**. Se conecta al stream público de eventos en tiempo real de Wikimedia (Wikipedia), limpia y transforma cada evento, y los publica en el tópico `wiki.changes` de Kafka para que otros servicios los consuman.
@@ -94,7 +94,7 @@ Comprime los mensajes antes de enviarlos al broker. `snappy` es el algoritmo de 
 def delivery_callback(err, msg):
     """Callback invocado por librdkafka cuando el broker confirma la recepción."""
     if err:
-        print(f"❌ Error al entregar mensaje: {err}")
+        print(f"Error al entregar mensaje: {err}")
 ```
 Esta función es un **callback asíncrono** que `librdkafka` invoca cuando el broker confirma (o rechaza) la entrega de un mensaje. Se registra en cada llamada a `producer.produce(..., callback=delivery_callback)`.
 
@@ -214,10 +214,10 @@ Procesa los callbacks de entrega pendientes **sin bloquear** (timeout=0). Si hay
 
 ```python
 except KeyboardInterrupt:
-    print("\n⚡ Interrupción por el usuario. Vaciando cola de Kafka...")
+    print("\nInterrupción por el usuario. Vaciando cola de Kafka...")
 finally:
     producer.flush()
-    print("✅ Productor desconectado de forma segura.")
+    print("Productor desconectado de forma segura.")
 ```
 - `KeyboardInterrupt`: Captura Ctrl+C del usuario para un cierre limpio.
 - `producer.flush()`: **CRÍTICO.** Espera a que todos los mensajes encolados (pero no enviados aún) sean enviados y confirmados por el broker antes de cerrar. Sin `flush()`, al terminar el proceso podrían perderse los últimos mensajes que estaban en el buffer de `linger.ms`.

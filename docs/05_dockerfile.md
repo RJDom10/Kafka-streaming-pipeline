@@ -1,4 +1,4 @@
-# 📄 Documentación: `Dockerfile`
+# Documentación: `Dockerfile`
 
 **Archivo:** `Dockerfile`
 **Propósito:** Define la **imagen Docker personalizada** que comparten el producer y el consumer. Es el blueprint (plano) para construir un contenedor Python con todas las dependencias del proyecto preinstaladas.
@@ -93,10 +93,10 @@ CMD ["python"]
 ```
 
 Cuando modificas `producer.py` y haces rebuild, Docker:
-1. ✅ Reutiliza caché: FROM (capa 1)
-2. ✅ Reutiliza caché: COPY requirements.txt (capa 2)
-3. ✅ Reutiliza caché: pip install (capa 3) ← ¡Ahorra 30-60 segundos!
-4. 🔄 Reconstruye: COPY producer.py consumer.py (capa 4)
+1. Reutiliza caché: FROM (capa 1)
+2. Reutiliza caché: COPY requirements.txt (capa 2)
+3. Reutiliza caché: pip install (capa 3) ← ¡Ahorra 30-60 segundos!
+4. Reconstruye: COPY producer.py consumer.py (capa 4)
 
 ---
 

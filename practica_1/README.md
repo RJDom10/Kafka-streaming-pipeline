@@ -6,7 +6,7 @@
 
 ---
 
-## 🎯 Objetivo General de la Práctica
+## Objetivo General de la Práctica
 Comprender y dominar en la práctica el mecanismo fundamental que le otorga a Apache Kafka su alta disponibilidad y escalabilidad horizontal: **los Grupos de Consumidores (Consumer Groups)** y el protocolo de **Rebalanceo Automático (Partition Rebalance)**.
 
 Al completar esta práctica, el alumno/ingeniero será capaz de:
@@ -18,7 +18,7 @@ Al completar esta práctica, el alumno/ingeniero será capaz de:
 
 ---
 
-## 📂 Contenido del Módulo `practica_1/`
+## Contenido del Módulo `practica_1/`
 
 Esta carpeta contiene la ruta pedagógica completa, dividida en 4 documentos de estudio y aplicación:
 
@@ -31,14 +31,14 @@ Esta carpeta contiene la ruta pedagógica completa, dividida en 4 documentos de 
 
 ---
 
-## 🛠️ Requisitos Previos
+## Requisitos Previos
 * Docker y Docker Compose en funcionamiento.
 * El pipeline actual levantado y saludable (`docker compose ps` con `kafka`, `postgres`, `producer`, `consumer` y `kafka-ui` en estado `Up`).
 * Acceso web a Kafka UI en el puerto `8080` (`http://localhost:8080`).
 
 ---
 
-## 🧭 Mapa de Navegación Sugerido
+## Mapa de Navegación Sugerido
 1. **Paso 1:** Lee [`01_teoria_profunda_consumer_groups.md`](./01_teoria_profunda_consumer_groups.md) para asimilar los conceptos teóricos y evitar mitos comunes sobre el escalado de Kafka.
 2. **Paso 2:** Sigue la [`02_guia_demostrativa_paso_a_paso.md`](./02_guia_demostrativa_paso_a_paso.md) ejecutando los comandos en tu terminal y contrastándolos con Kafka UI.
 3. **Paso 3:** Enfréntate a los retos de [`03_laboratorio_retos_practicos.md`](./03_laboratorio_retos_practicos.md) para validar tu habilidad operativa de forma autónoma.

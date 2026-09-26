@@ -5,7 +5,7 @@
 
 ---
 
-## 📂 Contenido del Módulo `consultas_sql/`
+## Contenido del Módulo `consultas_sql/`
 
 | Archivo | Contenido |
 |---|---|
@@ -15,7 +15,7 @@
 
 ---
 
-## ⚡ ¿Son estas consultas en "Tiempo Real"?
+## ¿Son estas consultas en "Tiempo Real"?
 
 ### La distinción técnica clave:
 * **Ingesta en Tiempo Real (Push continuo):** Sí. El consumidor de Kafka inserta lotes de eventos continuamente en la tabla `wiki_recent_changes`. La latencia entre la edición real en Wikipedia y su inserción en PostgreSQL es de **menos de 3 segundos**.
