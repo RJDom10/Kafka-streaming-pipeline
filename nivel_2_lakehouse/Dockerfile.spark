@@ -1,0 +1,24 @@
+# =============================================================================
+# Dockerfile de PySpark con Apache Iceberg y Kafka Connector
+# Extiende la imagen oficial tabulario/spark-iceberg que ya incluye:
+#   - Apache Spark 3.5.1
+#   - Apache Iceberg 1.5.2
+#   - AWS SDK para S3/MinIO
+#   - Jupyter Notebook
+# Se agregan los JARs del conector Kafka para Structured Streaming.
+# =============================================================================
+
+FROM tabulario/spark-iceberg:3.5.1_1.5.0
+
+USER root
+
+# Descargar JARs del conector Kafka para Spark Structured Streaming.
+# Estos JARs permiten a Spark leer/escribir directamente desde topicos de Kafka.
+#   - spark-sql-kafka: Conector principal (Data Source API)
+#   - spark-token-provider: Autenticacion delegada con el broker
+#   - commons-pool2: Pool de conexiones TCP reutilizables al broker
+RUN cd /opt/spark/jars && \
+    curl -sO https://repo1.maven.org/maven2/org/apache/spark/spark-sql-kafka-0-10_2.12/3.5.1/spark-sql-kafka-0-10_2.12-3.5.1.jar && \
+    curl -sO https://repo1.maven.org/maven2/org/apache/spark/spark-token-provider-kafka-0-10_2.12/3.5.1/spark-token-provider-kafka-0-10_2.12-3.5.1.jar && \
+    curl -sO https://repo1.maven.org/maven2/org/apache/kafka/kafka-clients/3.4.1/kafka-clients-3.4.1.jar && \
+    curl -sO https://repo1.maven.org/maven2/org/apache/commons/commons-pool2/2.12.0/commons-pool2-2.12.0.jar &&     sed -i 's|http://rest:8181|http://iceberg-rest:8181|g' /opt/spark/conf/spark-defaults.conf 2>/dev/null || true

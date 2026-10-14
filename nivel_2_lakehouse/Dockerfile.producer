@@ -1,0 +1,18 @@
+# =============================================================================
+# Dockerfile del Productor de Eventos Wikimedia
+# Imagen ligera basada en Python 3.11 que conecta al stream SSE de Wikimedia
+# y publica eventos sanitizados al topico Kafka wiki.changes.
+# =============================================================================
+
+FROM python:3.11-slim
+
+WORKDIR /app
+
+# Capa de dependencias (se cachea si requirements.txt no cambia)
+COPY requirements.txt .
+RUN pip install --no-cache-dir -r requirements.txt
+
+# Capa de codigo fuente
+COPY producer.py .
+
+CMD ["python", "-u", "producer.py"]
